@@ -26,7 +26,6 @@ def get_target_path(suffix, pattern, file_path):
 
 
 def move_file_if_not_exists(source_path, target_path):
-
     if os.path.exists(target_path):
         return False
     else:
@@ -38,21 +37,27 @@ def move_file_if_not_exists(source_path, target_path):
         return True
 
 
-skipped = 0
-copied = 0
+def move_files(sources, target, file_path_pattern):
+    skipped = 0
+    copied = 0
+
+    for source in sources:
+        for dir_path, dir_names, file_names in os.walk(source):
+            for file_name in file_names:
+                if file_name.lower().endswith(('jpg', 'jpeg', 'raw', 'mpg', 'mpeg',  'mp2', 'm2v', 'mp4', 'avi', 'mov',
+                                            'qt')):
+                    source_path = os.path.join(dir_path, file_name)
+                    target_path = get_target_path(target, file_path_pattern, source_path)
+                    if move_file_if_not_exists(source_path, target_path):
+                        copied = copied + 1
+                    else:
+                        skipped = skipped + 1
+    print('skipped existing files: ' + str(skipped))
+    print('copied new files: ' + str(copied))
+
+
 file_path_pattern = '%Y/%m/%Y-%m-%d-%f'
-source = "/home/andreasbehnke/Bilder/Buch"
+sources = ["/home/andreasbehnke/Bilder/Buch"]
 target = "/home/andreasbehnke/Bilder/Year"
 
-for dir_path, dir_names, file_names in os.walk(source):
-    for file_name in file_names:
-        if file_name.lower().endswith(('jpg', 'jpeg', 'raw', 'mpg', 'mpeg',  'mp2', 'm2v', 'mp4', 'avi', 'mov',
-                                       'qt')):
-            source_path = os.path.join(dir_path, file_name)
-            target_path = get_target_path(target, file_path_pattern, source_path)
-            if move_file_if_not_exists(source_path, target_path):
-                copied = copied + 1
-            else:
-                skipped = skipped + 1
-print('skipped existing files: ' + str(skipped))
-print('copied new files: ' + str(copied))
+move_files(sources, target, file_path_pattern)

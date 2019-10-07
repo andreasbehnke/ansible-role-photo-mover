@@ -20,11 +20,13 @@ def get_created_date(file_path):
             return time.strptime(created_str, '%Y:%m:%d %H:%M:%S')
 
 
-def get_target_path(suffix, file_path):
+def get_target_path(suffix, pattern, file_path):
     created = get_created_date(file_path)
-    return suffix + '/' + time.strftime('%Y/%m/%Y-%m-%d-', created) + os.path.basename(file_path)
+    time_pattern = pattern.replace('%f', os.path.basename(file_path))
+    return suffix + '/' + time.strftime(time_pattern, created)
 
 
+file_path_pattern = '%Y/%m/%Y-%m-%d-%f'
 source = "/mnt/backup"
 target = "/mnt/photo"
 skipped = 0
@@ -35,7 +37,7 @@ for dir_path, dir_names, file_names in os.walk(source):
         if file_name.lower().endswith(('jpg', 'jpeg', 'raw', 'mpg', 'mpeg',  'mp2', 'm2v', 'mp4', 'avi', 'mov',
                                        'qt')):
             source_path = os.path.join(dir_path, file_name)
-            target_path = get_target_path(target, source_path)
+            target_path = get_target_path(target, file_path_pattern, source_path)
             if os.path.exists(target_path):
                 skipped = skipped + 1
             else:

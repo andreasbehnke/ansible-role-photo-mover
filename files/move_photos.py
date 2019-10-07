@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import shutil
+import sys
 import time
 
 from exifread import process_file
@@ -42,7 +43,7 @@ def move_files(sources, target, file_path_pattern):
     copied = 0
 
     for source in sources:
-        for dir_path, dir_names, file_names in os.walk(source):
+        for dir_path, _, file_names in os.walk(source):
             for file_name in file_names:
                 if file_name.lower().endswith(('jpg', 'jpeg', 'raw', 'mpg', 'mpeg',  'mp2', 'm2v', 'mp4', 'avi', 'mov',
                                             'qt')):
@@ -55,9 +56,23 @@ def move_files(sources, target, file_path_pattern):
     print('skipped existing files: ' + str(skipped))
     print('copied new files: ' + str(copied))
 
-
-file_path_pattern = '%Y/%m/%Y-%m-%d-%f'
-sources = ["/home/andreasbehnke/Bilder/Buch"]
-target = "/home/andreasbehnke/Bilder/Year"
-
-move_files(sources, target, file_path_pattern)
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("usage: move_photos.py target source_list_file [file_path_pattern]")
+        print("       source_list_file:  file containing source pathes, one per line")
+        print("       target:  target path to move media files")
+        print("       file_path_pattern:  file renaming pattern, defaults to '%Y/%m/%Y-%m-%d-%f'")
+        exit()
+    
+    sources_file_path = sys.argv[1]
+    target = sys.argv[2]
+    file_path_pattern = '%Y/%m/%Y-%m-%d-%f'
+    if (len(sys.argv) > 3):
+        file_path_pattern = sys.argv[3]
+    sources = []
+    with open(sources_file_path) as sources_file:
+        for line in sources_file:
+            sources.append(line.strip()) 
+    print('target: ' + target)
+    print('sources: ' + str(sources))
+    move_files(sources, target, file_path_pattern)

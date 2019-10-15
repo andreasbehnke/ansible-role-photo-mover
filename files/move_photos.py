@@ -58,7 +58,7 @@ def move_files(sources, target, file_path_pattern):
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        print("usage: move_photos.py target source_list_file [file_path_pattern]")
+        print("usage: move_photos.py source_list_file target [file_path_pattern]")
         print("       source_list_file:  file containing source pathes, one per line")
         print("       target:  target path to move media files")
         print("       file_path_pattern:  file renaming pattern, defaults to '%Y/%m/%Y-%m-%d-%f'")

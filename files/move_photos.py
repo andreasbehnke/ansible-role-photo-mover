@@ -25,22 +25,43 @@ def get_target_path(suffix, pattern, file_path):
     time_pattern = pattern.replace('%f', os.path.basename(file_path))
     return suffix + '/' + time.strftime(time_pattern, created)
 
+def ensure_directories(target_path):
+    target_path_dir = os.path.dirname(target_path)
+    if not os.path.exists(target_path_dir):
+        os.makedirs(target_path_dir)
 
 def move_file_if_not_exists(source_path, target_path):
     if os.path.exists(target_path):
         return False
     else:
-        print(target_path)
-        target_path_dir = os.path.dirname(target_path)
-        if not os.path.exists(target_path_dir):
-            os.makedirs(target_path_dir)
+        print('cp ' + target_path)
+        ensure_directories(target_path)
         shutil.copy2(source_path, target_path)
         return True
 
-
-def move_files(sources, target, file_path_pattern):
+def link_file(source_path, target_path, trash_bin_path):
+    if (os.path.exists(target_path)):
+        if (not os.path.samefile(source_path, target_path)):
+            # remove duplicate file by creating hard link
+            print('ln existing ' + target_path)
+            # create backup for security reasons
+            if not os.path.exists(trash_bin_path):
+                os.makedirs(trash_bin_path)
+            shutil.move(target_path, trash_bin_path)
+            os.link(source_path, target_path)
+            return True
+        else:
+            return False
+    else :
+        print('ln ' + target_path)
+        ensure_directories(target_path)
+        os.link(source_path, target_path)
+        return True
+        
+def move_files(sources, target, file_path_pattern, create_links = True, trash_bin_path_postfix = '/trash/'):
     skipped = 0
     copied = 0
+    trash_bin_path = target + trash_bin_path_postfix
 
     for source in sources:
         for dir_path, _, file_names in os.walk(source):
@@ -49,7 +70,12 @@ def move_files(sources, target, file_path_pattern):
                                             'qt')):
                     source_path = os.path.join(dir_path, file_name)
                     target_path = get_target_path(target, file_path_pattern, source_path)
-                    if move_file_if_not_exists(source_path, target_path):
+                    modified = False
+                    if (create_links):
+                        modified = link_file(source_path, target_path, trash_bin_path)
+                    else:
+                        modified = move_file_if_not_exists(source_path, target_path)
+                    if modified:
                         copied = copied + 1
                     else:
                         skipped = skipped + 1

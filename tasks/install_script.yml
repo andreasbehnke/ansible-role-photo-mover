@@ -16,7 +16,15 @@
     with_items: 
       - '/opt/photo_mover'
       - '/etc/opt/photo_mover'
-      - '/var/log/photo_mover'
+
+  - name: ensure log directory
+    become: yes
+    file:
+      name: '/var/log/photo_mover'
+      mode: '0755'
+      state: 'directory'
+      user: {{ photo_mover_user }}
+      group: {{ photo_mover_group }}
 
   - name: copy python script
     become: yes

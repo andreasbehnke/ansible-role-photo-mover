@@ -1,2 +1,2 @@
 #!/bin/bash
-/opt/photo_mover/move_photos.py /etc/opt/photo_mover/sources {{ photo_mover_target }} >> /var/log/photo_mover/photo_mover.log
+/usr/bin/python3 /opt/photo_mover/move_photos.py /etc/opt/photo_mover/sources {{ photo_mover_target }} >> /var/log/photo_mover/photo_mover.log

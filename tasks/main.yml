@@ -1,2 +1,3 @@
 ---
-  - include: install_move_photos.yml
+  - include: install_script.yml
+  - include: install_service.yml

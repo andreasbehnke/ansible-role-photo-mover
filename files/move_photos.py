@@ -45,7 +45,7 @@ def link_file(source_path, target_path, trash_bin_path):
             # remove duplicate file by creating hard link
             print('ln existing ' + target_path)
             # create backup for security reasons
-            if (not os.path.exists(os.path.join(trash_bin_path, os.path.basename(target_path))))
+            if (not os.path.exists(os.path.join(trash_bin_path, os.path.basename(target_path)))):
                 shutil.move(target_path, trash_bin_path) # create backup
             os.link(source_path, target_path)
             return True

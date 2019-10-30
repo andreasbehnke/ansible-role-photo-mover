@@ -102,4 +102,4 @@ if __name__ == '__main__':
     print('target: ' + target)
     print('sources: ' + str(sources))
     print('file_path_pattern: ' + file_path_pattern)
-    #move_files(sources, target, file_path_pattern)
+    move_files(sources, target, file_path_pattern)

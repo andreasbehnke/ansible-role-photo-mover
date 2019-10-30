@@ -45,9 +45,8 @@ def link_file(source_path, target_path, trash_bin_path):
             # remove duplicate file by creating hard link
             print('ln existing ' + target_path)
             # create backup for security reasons
-            if not os.path.exists(trash_bin_path):
-                os.makedirs(trash_bin_path)
-            shutil.move(target_path, trash_bin_path)
+            if (not os.path.exists(os.path.join(trash_bin_path, os.path.basename(target_path))))
+                shutil.move(target_path, trash_bin_path) # create backup
             os.link(source_path, target_path)
             return True
         else:
@@ -72,6 +71,8 @@ def move_files(sources, target, file_path_pattern, create_links = True, trash_bi
                     target_path = get_target_path(target, file_path_pattern, source_path)
                     modified = False
                     if (create_links):
+                        if not os.path.exists(trash_bin_path):
+                            os.makedirs(trash_bin_path) # ensure trash bin exists
                         modified = link_file(source_path, target_path, trash_bin_path)
                     else:
                         modified = move_file_if_not_exists(source_path, target_path)

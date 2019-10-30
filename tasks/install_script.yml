@@ -1,0 +1,33 @@
+---
+
+  - name: install dependencies
+    become: yes
+    apt: 
+      name: python3-exif
+      state: present
+  
+  # following FHS
+  - name: ensure installation directorys
+    become: yes
+    file:
+      name: '{{ item }}'
+      mode: '755'
+      state: 'directory'
+    with_items: 
+      - '/opt/photo_mover'
+      - '/etc/opt/photo_mover'
+      - '/var/log/photo_mover'
+
+  - name: copy script
+    become: yes
+    copy:
+      src: 'move_photos.py'
+      dest: '/opt/photo_mover/move_photos.py'
+      mode: '755'
+
+  - name: create source list
+    become: yes
+    template: 
+      src: 'sources.j2' 
+      dest: '/etc/opt/photo_mover/sources' 
+      mode: '0755'

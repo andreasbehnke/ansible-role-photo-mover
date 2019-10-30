@@ -1,0 +1,8 @@
+[Unit]
+Description=scheduled photo move
+
+[Timer]
+OnCalendar=*:1/{{ photo_mover.frequency_in_minutes }}
+
+[Install]
+WantedBy=timers.target

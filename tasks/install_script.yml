@@ -25,6 +25,7 @@
       state: 'directory'
       owner: '{{ photo_mover_user }}'
       group: '{{ photo_mover_group }}'
+      recurse: yes
 
   - name: copy python script
     become: yes

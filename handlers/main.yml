@@ -1,0 +1,14 @@
+
+  - name: restart photo_mover.service
+    become: yes
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      name: photo_mover.service
+
+  - name: restart photo_mover.timer
+    become: yes
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      name: photo_mover.timer

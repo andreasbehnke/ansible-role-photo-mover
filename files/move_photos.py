@@ -5,6 +5,7 @@ import sys
 import time
 
 from exifread import process_file
+from datetime import datetime
 
 def get_created_date(file_path):
     with open(file_path, 'rb') as img_file:
@@ -30,20 +31,22 @@ def ensure_directories(target_path):
     if not os.path.exists(target_path_dir):
         os.makedirs(target_path_dir)
 
-def move_file_if_not_exists(source_path, target_path):
+def move_file_if_not_exists(debug, source_path, target_path):
     if os.path.exists(target_path):
         return False
     else:
-        print('cp ' + target_path)
+        if (debug)
+            print('cp ' + target_path)
         ensure_directories(target_path)
         shutil.copy2(source_path, target_path)
         return True
 
-def link_file(source_path, target_path, trash_bin_path):
+def link_file(debug, source_path, target_path, trash_bin_path):
     if (os.path.exists(target_path)):
         if (not os.path.samefile(source_path, target_path)):
             # remove duplicate file by creating hard link
-            print('ln existing ' + target_path)
+            if (debug)
+                print('ln existing ' + target_path)
             # create backup for security reasons
             if (not os.path.exists(os.path.join(trash_bin_path, os.path.basename(target_path)))):
                 shutil.move(target_path, trash_bin_path) # create backup
@@ -54,7 +57,8 @@ def link_file(source_path, target_path, trash_bin_path):
         else:
             return False
     else :
-        print('ln ' + target_path)
+        if (debug)
+            print('ln ' + target_path)
         ensure_directories(target_path)
         os.link(source_path, target_path)
         return True
@@ -75,9 +79,9 @@ def move_files(sources, target, file_path_pattern, create_links = True, trash_bi
                     if (create_links):
                         if not os.path.exists(trash_bin_path):
                             os.makedirs(trash_bin_path) # ensure trash bin exists
-                        modified = link_file(source_path, target_path, trash_bin_path)
+                        modified = link_file(False, source_path, target_path, trash_bin_path)
                     else:
-                        modified = move_file_if_not_exists(source_path, target_path)
+                        modified = move_file_if_not_exists(False, source_path, target_path)
                     if modified:
                         copied = copied + 1
                     else:
@@ -102,6 +106,8 @@ if __name__ == '__main__':
     with open(sources_file_path) as sources_file:
         for line in sources_file:
             sources.append(line.strip()) 
+    print('********************************************')
+    print('started at ' + datetime.now())
     print('target: ' + target)
     print('sources: ' + str(sources))
     print('file_path_pattern: ' + file_path_pattern)

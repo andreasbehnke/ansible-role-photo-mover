@@ -35,7 +35,7 @@ def move_file_if_not_exists(debug, source_path, target_path):
     if os.path.exists(target_path):
         return False
     else:
-        if (debug)
+        if debug:
             print('cp ' + target_path)
         ensure_directories(target_path)
         shutil.copy2(source_path, target_path)
@@ -45,7 +45,7 @@ def link_file(debug, source_path, target_path, trash_bin_path):
     if (os.path.exists(target_path)):
         if (not os.path.samefile(source_path, target_path)):
             # remove duplicate file by creating hard link
-            if (debug)
+            if debug:
                 print('ln existing ' + target_path)
             # create backup for security reasons
             if (not os.path.exists(os.path.join(trash_bin_path, os.path.basename(target_path)))):
@@ -57,7 +57,7 @@ def link_file(debug, source_path, target_path, trash_bin_path):
         else:
             return False
     else :
-        if (debug)
+        if debug:
             print('ln ' + target_path)
         ensure_directories(target_path)
         os.link(source_path, target_path)
@@ -105,9 +105,8 @@ if __name__ == '__main__':
     sources = []
     with open(sources_file_path) as sources_file:
         for line in sources_file:
-            sources.append(line.strip()) 
-    print('********************************************')
-    print('started at ' + datetime.now())
+            sources.append(line.strip())
+    print('started at ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     print('target: ' + target)
     print('sources: ' + str(sources))
     print('file_path_pattern: ' + file_path_pattern)
